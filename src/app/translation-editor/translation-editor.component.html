@@ -1,0 +1,175 @@
+<div class="translation-container">
+  <!-- Template recursivo -->
+  <ng-template #renderNode let-data="data" let-level="level">
+    @for (key of objectKeys(data); track key) {
+
+    <!-- ARRAYS -->
+    @if (isArray(data[key])) {
+    <div class="card mb-3">
+      <div
+        class="card-header d-flex justify-content-between align-items-center bg-info text-white"
+      >
+        <strong>{{ key }}</strong>
+        <div>
+          <button class="btn btn-sm btn-light me-1" (click)="addArrayItem(key)">
+            <i class="fa fa-plus"></i>
+          </button>
+          <button
+            class="btn btn-sm btn-light"
+            (click)="removeKeyFromObject(data, key)"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="card-body ms-3">
+        @for (entry of getIndexedArray(key); track entry.index) {
+        <div class="card mb-2">
+          <div
+            class="card-header d-flex justify-content-between align-items-center"
+          >
+            <strong>Item {{ entry.index + 1 }}</strong>
+            <button
+              class="btn btn-sm btn-light"
+              (click)="removeArrayItem(key, entry.index)"
+            >
+              <i class="fa fa-trash"></i>
+            </button>
+          </div>
+          <div class="card-body ms-3">
+            <ng-container
+              *ngTemplateOutlet="
+                renderNode;
+                context: { data: entry.item, level: level + 1 }
+              "
+            ></ng-container>
+          </div>
+        </div>
+        }
+      </div>
+    </div>
+    }
+
+    <!-- OBJETOS -->
+    @if (isObject(data[key])) {
+    <div class="card mb-3">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+        [ngClass]="level === 0 ? 'bg-primary text-white' : 'bg-light'"
+        (click)="toggleCollapse(key)"
+        style="cursor: pointer"
+      >
+        <div class="d-flex align-items-center">
+          <i
+            class="fa"
+            [ngClass]="
+              collapsedKeys[key] ? 'fa-chevron-right' : 'fa-chevron-down'
+            "
+          ></i>
+          <span class="ms-2">
+            @if(editingKey === key) {
+            <input
+              type="text"
+              class="form-control form-control-sm"
+              [value]="key"
+              (click)="$event.stopPropagation()"
+              (blur)="onKeyEditBlur(key, $event)"
+            />
+            } @else {
+            <strong (click)="$event.stopPropagation()">{{ key }}</strong>
+            }
+          </span>
+        </div>
+
+        <div>
+          <button
+            class="btn btn-sm btn-light me-1"
+            (click)="toggleEditKey(key); $event.stopPropagation()"
+          >
+            <i
+              class="fa"
+              [ngClass]="editingKey === key ? 'fa-save' : 'fa-pen'"
+            ></i>
+          </button>
+          <button
+            class="btn btn-sm btn-light"
+            (click)="removeKeyFromObject(data, key); $event.stopPropagation()"
+          >
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
+      </div>
+
+      @if (!collapsedKeys[key]) {
+      <div class="card-body ms-3">
+        <ng-container
+          *ngTemplateOutlet="
+            renderNode;
+            context: { data: data[key], level: level + 1 }
+          "
+        ></ng-container>
+
+        <!-- Add Field al final -->
+        <button
+          class="btn btn-sm btn-outline-primary mt-2"
+          (click)="addKeyToObject(data[key])"
+        >
+          <i class="fa fa-plus"></i> Add field
+        </button>
+      </div>
+      }
+    </div>
+    }
+
+    <!-- VALORES SIMPLES -->
+    @if (!isObject(data[key]) && !isArray(data[key])) {
+    <div class="mb-2 row align-items-center">
+      <div class="col-sm-4">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [value]="key"
+          (blur)="onKeyEditBlur(key, $event)"
+        />
+      </div>
+      <div class="col-sm-6">
+        <input
+          type="text"
+          class="form-control form-control-sm"
+          [(ngModel)]="data[key]"
+          (ngModelChange)="emitChange()"
+        />
+      </div>
+      <div class="col-sm-2 text-end">
+        <button
+          class="btn btn-sm btn-outline-success me-1"
+          (click)="translateSingleField(data, key, 'fr')"
+          title="Traducir al inglés"
+        >
+          <i class="fa fa-language"></i>
+        </button>
+        <button
+          class="btn btn-sm btn-light"
+          (click)="removeKeyFromObject(data, key)"
+        >
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    } }
+  </ng-template>
+
+  <!-- Render principal -->
+  <ng-container
+    *ngTemplateOutlet="renderNode; context: { data: data, level: level }"
+  ></ng-container>
+
+  @if (level === 0) {
+  <div class="container">
+    <button class="btn btn-sm btn-outline-primary mt-3" (click)="addKey()">
+      <i class="fa fa-plus"></i> Add field
+    </button>
+  </div>
+  }
+</div>

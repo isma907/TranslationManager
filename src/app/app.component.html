@@ -1,0 +1,30 @@
+<nav class="navbar fixed-top navbar-light bg-light">
+  <div class="container">
+    <img
+      class="pt-3 mb-3"
+      src="https://www.independencepetgroup.com/wp-content/uploads/2023/03/IPG_Logo_FULL.png"
+      alt=""
+      width="250"
+    />
+  </div>
+</nav>
+
+<div class="container main-container" style="margin-top: 120px">
+  @if(!jsonData){
+  <app-file-loader (fileLoaded)="onFileLoaded($event)"></app-file-loader>
+  } @if(jsonData){
+  <app-translation-editor
+    [data]="jsonData"
+    (dataChange)="onDataChange($event)"
+  ></app-translation-editor>
+
+  <footer class="bg-light">
+    <div class="container">
+      <button class="mt-3 btn btn-warning" (click)="downloadFile()">
+        <i class="fa fa-download"></i>
+        Download JSON
+      </button>
+    </div>
+  </footer>
+  }
+</div>

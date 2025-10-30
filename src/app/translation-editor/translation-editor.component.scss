@@ -1,0 +1,59 @@
+.translation-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Cards para bloques primarios */
+.card {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.card-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.card-body {
+  padding-left: 10px;
+}
+
+/* Items anidados */
+.translation-item {
+  margin: 5px 0;
+}
+
+.translation-leaf {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.translation-leaf label {
+  width: 160px;
+  font-weight: 500;
+}
+
+input {
+  padding: 4px 6px;
+  flex: 1;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.nested {
+  margin-left: 20px;
+  border-left: 1px dashed #ccc;
+  padding-left: 10px;
+}
+
